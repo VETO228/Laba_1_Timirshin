@@ -1,0 +1,6 @@
+.add_form {
+    display: flex;
+    flex-direction: column;
+    margin: 200px;
+    padding: 0px 600px 0px 600px;
+}
