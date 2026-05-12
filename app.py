@@ -1,4 +1,4 @@
-from datetime import datetime
+from datatime import datatime, timedelta
 import json
 import os
 
@@ -6,7 +6,7 @@ from flask import Flask, redirect, render_template, request
 
 
 app = Flask(__name__)
-FILE_NAME = "tasks.json"
+FILE_NAME = "entries.json"
 
 
 def load_tasks():
@@ -31,19 +31,29 @@ def index():
     return render_template("index.html", tasks=tasks)
 
 
+@app.route("/add")
+def add_get():
+    return render_template("add.html")
+
+
 @app.route("/add", methods=["POST"])
 def add_task():
-    text = request.form.get("task", "").strip()
+    title = request.form.get("title", "").strip()
+    text = request.form.get("text", "").strip()
     if text:
         tasks.append(
             {
+                "title": title,
                 "text": text,
-                "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
-                "done": False,
             }
         )
         save_tasks(tasks)
     return redirect("/")
+
+
+@app.route("/detail/<int:task_id>", methods=["GET"])
+def detail_task(task_id):
+    return render_template("detail.html", task=tasks[task_id])
 
 
 @app.route("/delete/<int:task_id>")
@@ -51,13 +61,6 @@ def delete_task(task_id):
     if 0 <= task_id < len(tasks):
         tasks.pop(task_id)
         save_tasks(tasks)
-    return redirect("/")
-
-
-@app.route("/clear")
-def clear_tasks():
-    tasks.clear()
-    save_tasks(tasks)
     return redirect("/")
 
 
@@ -70,33 +73,19 @@ def edit_task(task_id):
         return redirect("/") 
 
     if request.method == 'POST':
-        new_text = request.form.get('task', '').strip()
+        new_title = request.form.get("title", '').strip()
+        new_text = request.form.get('text', '').strip()
 
         if new_text:
             tasks[task_id]['text'] = new_text
+            save_tasks(tasks)
+        if new_title:
+            tasks[task_id]['title'] = new_title
             save_tasks(tasks)
         return redirect('/')
 
     else:
         return render_template('edit.html', task=tasks[task_id])
-
-
-@app.route('/toggle/<int:task_id>')
-def toggle_task(task_id):
-    if 0 <= task_id < len(tasks):
-        tasks[task_id]['done'] = not tasks[task_id]['done']
-        save_tasks(tasks)
-    return redirect('/')
-
-@app.route('/active')
-def active_tasks():
-    return render_template("active.html", tasks=tasks)
-
-
-@app.route('/completed')
-def completed_tasks():
-    return render_template("completed.html", tasks=tasks)
-
 
 if __name__ == "__main__":
     app.run(debug=True)
