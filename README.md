@@ -1,1 +1,13 @@
-# Laba_1_Timirshin
+# Личный дневник
+
+Веб-приложение для ведения личного дневника на Flask.
+
+## Технологии
+- Python
+- Flask
+- JSON (хранение данных)
+
+## Запуск
+```bash
+pip install flask
+python app.py
