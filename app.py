@@ -1,4 +1,4 @@
-from datatime import datatime, timedelta
+from datetime import datetime, timedelta
 import json
 import os
 
@@ -39,12 +39,13 @@ def add_get():
 @app.route("/add", methods=["POST"])
 def add_task():
     title = request.form.get("title", "").strip()
-    text = request.form.get("text", "").strip()
-    if text:
+    content = request.form.get("content", "").strip()
+    if content:
         tasks.append(
             {
                 "title": title,
-                "text": text,
+                "content": content,
+                "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
             }
         )
         save_tasks(tasks)
@@ -69,15 +70,15 @@ def edit_task(task_id):
     if task_id < 0 or task_id >= len(tasks):
         return "Задача не найдена", 404
 
-    if len(tasks[task_id]["text"]) == 0:
+    if len(tasks[task_id]["content"]) == 0:
         return redirect("/") 
 
     if request.method == 'POST':
         new_title = request.form.get("title", '').strip()
-        new_text = request.form.get('text', '').strip()
+        new_content = request.form.get('content', '').strip()
 
-        if new_text:
-            tasks[task_id]['text'] = new_text
+        if new_content:
+            tasks[task_id]['content'] = new_content
             save_tasks(tasks)
         if new_title:
             tasks[task_id]['title'] = new_title
