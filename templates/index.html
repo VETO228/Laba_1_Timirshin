@@ -8,18 +8,21 @@
 </head>
 <body>
     <h1>Личный дневник</h1>
-  <div class="link_tasks">
-    <a href="/add">Добавить задачу</a>
-  </div>
   <ul>
     {% for task in tasks %}
         <li>
             <p>{{ task.title }}</p>
-            <a href="/detail/{{ loop.index0 }}">Подробнее</a>
-            <a href="/edit/{{ loop.index0 }}"> Редактировать</a>
-            <a href="/delete/{{ loop.index0 }}"> Удалить</a>
+            <a href="/detail/{{ task.id }}">Подробнее</a>
+            <a href="/edit/{{ task.id }}"> Редактировать</a>
+            <a href="/delete/{{ task.id }}"> Удалить</a>
         </li>
     {% endfor %}
 </ul>
+<h1>Добавление записи</h1>
+    <form method="POST" action="/add" class="add_form">
+        <input type="text" name="title" placeholder="Заголовок" required>
+        <input type="text" name="content" placeholder="Контент" required>
+        <button type="submit">Добавить</button>
+    </form>
 </body>
 </html>
